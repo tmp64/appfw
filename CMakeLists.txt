@@ -116,10 +116,14 @@ add_subdirectory(external/doctest)
 # appfw library
 set(SOURCE_FILES
 	include/appfw/appfw.h
+	include/appfw/compiler.h
+	include/appfw/dbg.h
 	include/appfw/init.h
+	include/appfw/platform.h
 	include/appfw/utils.h
 	
 	src/appfw.cpp
+	src/dbg.cpp
 	src/utils.cpp
 )
 
@@ -152,6 +156,7 @@ if(APPFW_BUILD_TESTS)
 	# Add test executable
 	add_executable(appfw_test_exec 
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/platform.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/utils.cpp
 	)
 	
