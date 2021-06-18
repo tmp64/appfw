@@ -91,10 +91,19 @@ endmacro(appfw_get_std_pch)
 macro(appfw_get_pch VAR_NAME)
 	set(${VAR_NAME}
 		<appfw/appfw.h>
-		<appfw/init.h>
-		<appfw/utils.h>
 	)
 endmacro(appfw_get_pch)
+
+# Generates module header file for a target
+function(appfw_module TARGET)
+	set(includeDir "${CMAKE_CURRENT_BINARY_DIR}/appfw/generated/${TARGET}")
+	get_property(headerFile TARGET appfw PROPERTY APPFW_MODULE_HEADER_FILE)
+	configure_file(
+		"${headerFile}"
+		"${includeDir}/this_module_info.h"
+	)
+	target_include_directories(${TARGET} BEFORE PRIVATE ${includeDir})
+endfunction(appfw_module)
 
 # Dependencies
 if(NOT APPFW_DONT_DOWNLOAD_DEPS)
@@ -115,14 +124,27 @@ add_subdirectory(external/doctest)
 
 # appfw library
 set(SOURCE_FILES
+	include/appfw/console/con_item.h
+	include/appfw/console/con_msg.h
+	include/appfw/console/console_system.h
+	include/appfw/console/std_console.h
+	include/appfw/console/term_console.h
 	include/appfw/appfw.h
+	include/appfw/cmd_buffer.h
+	include/appfw/cmd_string.h
 	include/appfw/compiler.h
 	include/appfw/dbg.h
 	include/appfw/init.h
 	include/appfw/platform.h
 	include/appfw/utils.h
+	include/appfw/windows.h
 	
+	src/console/con_item.cpp
+	src/console/console_system.cpp
+	src/console/std_console.cpp
 	src/appfw.cpp
+	src/cmd_buffer.cpp
+	src/cmd_string.cpp
 	src/dbg.cpp
 	src/utils.cpp
 )
@@ -131,6 +153,15 @@ add_library(appfw STATIC
 	CMakeLists.txt
 	${SOURCE_FILES}
 )
+
+define_property(
+	TARGET PROPERTY APPFW_MODULE_HEADER_FILE
+	BRIEF_DOCS "Path to this_module_info.h.in"
+	FULL_DOCS "Path to this_module_info.h.in"
+)
+set_property(TARGET appfw PROPERTY APPFW_MODULE_HEADER_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/this_module_info.h.in)
+
+appfw_module(appfw)
 
 target_include_directories(appfw PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(appfw PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -155,10 +186,13 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 if(APPFW_BUILD_TESTS)
 	# Add test executable
 	add_executable(appfw_test_exec 
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/cmd_string.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/platform.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/utils.cpp
 	)
+	
+	appfw_module(appfw_test_exec)
 	
 	target_link_libraries(appfw_test_exec
 		appfw

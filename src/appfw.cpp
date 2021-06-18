@@ -1,4 +1,6 @@
 #include <cassert>
+#include <appfw/console/std_console.h>
+#include <appfw/appfw.h>
 #include <appfw/utils.h>
 #include <appfw/init.h>
 
@@ -6,10 +8,19 @@ namespace {
 
 struct AppfwLibrary {
     unsigned uInitCount = 0;
+    appfw::manual_ptr<appfw::ConsoleSystem> pConSys;
+    appfw::manual_ptr<appfw::ITermConsole> pTermConsole;
 };
 
 AppfwLibrary s_Lib;
 
+} // namespace
+
+//--------------------------------------------------------------
+// Getters
+//--------------------------------------------------------------
+appfw::ConsoleSystem &appfw::getConsole() {
+    return *s_Lib.pConSys;
 }
 
 //--------------------------------------------------------------
@@ -21,17 +32,26 @@ appfw::InitOptions &appfw::InitOptions::setArgs(int argc, char **argv) {
     return *this;
 }
 
+appfw::InitOptions &appfw::InitOptions::setInputMethod(TermInputMethod method) {
+    inputMethod = method;
+    return *this;
+}
+
 bool appfw::isInitialized() {
     return s_Lib.uInitCount > 0;
 }
 
 void appfw::initialize(const InitOptions &options) {
     if (s_Lib.uInitCount == 0) {
-        s_Lib.uInitCount++;
+        // Init console system
+        s_Lib.pConSys = new ConsoleSystem();
 
-        // TODO: Read options
-        (void)options;
+        // Add terminal console receiver
+        s_Lib.pTermConsole = new StdConsole(options.inputMethod);
+        s_Lib.pConSys->addConsoleReceiver(s_Lib.pTermConsole.get());
     }
+
+    s_Lib.uInitCount++;
 }
 
 void appfw::shutdown() {
@@ -40,8 +60,25 @@ void appfw::shutdown() {
         abort();
     }
 
-    if (s_Lib.uInitCount == 1) {
-        // TODO: Free resources
-        s_Lib.uInitCount--;
+    s_Lib.uInitCount--;
+
+    if (s_Lib.uInitCount == 0) {
+        // Shutdown console receiver
+        if (s_Lib.pTermConsole) {
+            s_Lib.pConSys->removeConsoleReceiver(s_Lib.pTermConsole.get());
+            s_Lib.pTermConsole.reset();
+        }
+
+        // Shutdown console system
+        s_Lib.pConSys.reset();
     }
+}
+
+void appfw::mainLoopTick() {
+    if (s_Lib.pTermConsole) {
+        s_Lib.pTermConsole->tick();
+    }
+
+    s_Lib.pConSys->processCommand();
+    s_Lib.pConSys->processMsgQueue();
 }

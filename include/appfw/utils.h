@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <future>
+#include <appfw/dbg.h>
 
 namespace appfw {
 
@@ -89,6 +90,9 @@ extern template bool convertStringToVal<unsigned long>(const std::string &str, u
 extern template bool convertStringToVal<long long>(const std::string &str, long long &val);
 extern template bool convertStringToVal<unsigned long long>(const std::string &str,
                                                             unsigned long long &val);
+extern template bool convertStringToVal<float>(const std::string &str, float &val);
+extern template bool convertStringToVal<double>(const std::string &str, double &val);
+extern template bool convertStringToVal<std::string>(const std::string &str, std::string &val);
 
 //----------------------------------------------------------------
 
@@ -160,6 +164,40 @@ template <typename R>
 inline bool isFutureReady(const std::future<R> &f) {
     return f.valid() && f.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
 }
+
+//----------------------------------------------------------------
+
+/**
+ * A "smart" pointer that would abort() if it wasn't freed manually.
+ */
+template <typename T>
+class manual_ptr {
+public:
+    manual_ptr() = default;
+    manual_ptr(T *p) { m_pPtr = p; }
+    ~manual_ptr() {
+        if (m_pPtr) {
+            AFW_ASSERT_MSG(false, "appfw::manual_ptr was not freed");
+            std::abort();
+        }
+    }
+
+    manual_ptr<T> &operator=(T *p) {
+        m_pPtr = std::unique_ptr<T>(p);
+        return *this;
+    }
+
+    T *get() { return m_pPtr.get(); }
+    T &operator*() { return *m_pPtr; }
+    T *operator->() { return m_pPtr.get(); }
+
+    explicit operator bool() { return m_pPtr.get() != nullptr; }
+
+    void reset() { m_pPtr.reset(); }
+
+private:
+    std::unique_ptr<T> m_pPtr = nullptr;
+};
 
 } // namespace appfw
 

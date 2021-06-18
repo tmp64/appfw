@@ -1,5 +1,6 @@
 #ifndef APPFW_INIT_H
 #define APPFW_INIT_H
+#include <appfw/console/term_console.h>
 #include <appfw/utils.h>
 
 namespace appfw {
@@ -7,11 +8,13 @@ namespace appfw {
 struct InitOptions {
     int iArgc = 0;
     char **ppszArgv = nullptr;
+    TermInputMethod inputMethod = TermInputMethod::Enable;
 
-    /**
-     * Sets command line arguments to be parsed during init.
-     */
+    //! Sets command line arguments to be parsed during init.
     InitOptions &setArgs(int argc, char **argv);
+
+    //! Sets input method.
+    InitOptions &setInputMethod(TermInputMethod method);
 };
 
 /**
@@ -31,6 +34,11 @@ void initialize(const InitOptions &options);
  * memory will be leaked and will trigger leak sanitizer.
  */
 void shutdown();
+
+/**
+ * Does processing on the main thread.
+ */
+void mainLoopTick();
 
 struct InitComponent : NoMove {
     inline InitComponent(const InitOptions &options) { initialize(options); }
