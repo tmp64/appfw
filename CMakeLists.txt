@@ -137,6 +137,7 @@ set(SOURCE_FILES
 	include/appfw/dbg.h
 	include/appfw/init.h
 	include/appfw/platform.h
+	include/appfw/timer.h
 	include/appfw/utils.h
 	include/appfw/windows.h
 	
