@@ -138,6 +138,7 @@ set(SOURCE_FILES
 	include/appfw/init.h
 	include/appfw/platform.h
 	include/appfw/sha256.h
+	include/appfw/span.h
 	include/appfw/timer.h
 	include/appfw/utils.h
 	include/appfw/windows.h
