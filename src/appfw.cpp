@@ -8,6 +8,7 @@ namespace {
 
 struct AppfwLibrary {
     unsigned uInitCount = 0;
+    appfw::CommandLine cmdLine;
     appfw::manual_ptr<appfw::ConsoleSystem> pConSys;
     appfw::manual_ptr<appfw::ITermConsole> pTermConsole;
 };
@@ -21,6 +22,10 @@ AppfwLibrary s_Lib;
 //--------------------------------------------------------------
 appfw::ConsoleSystem &appfw::getConsole() {
     return *s_Lib.pConSys;
+}
+
+appfw::CommandLine &appfw::getCommandLine() {
+    return s_Lib.cmdLine;
 }
 
 //--------------------------------------------------------------
@@ -49,6 +54,12 @@ void appfw::initialize(const InitOptions &options) {
         // Add terminal console receiver
         s_Lib.pTermConsole = new StdConsole(options.inputMethod);
         s_Lib.pConSys->addConsoleReceiver(s_Lib.pTermConsole.get());
+
+        // Parse arguments
+        if (options.iArgc > 0) {
+            AFW_ASSERT(options.ppszArgv);
+            getCommandLine().parseCommandLine(options.iArgc, options.ppszArgv, true);
+        }
     }
 
     s_Lib.uInitCount++;

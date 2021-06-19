@@ -132,6 +132,7 @@ set(SOURCE_FILES
 	include/appfw/appfw.h
 	include/appfw/cmd_buffer.h
 	include/appfw/cmd_string.h
+	include/appfw/command_line.h
 	include/appfw/compiler.h
 	include/appfw/dbg.h
 	include/appfw/init.h
@@ -145,6 +146,7 @@ set(SOURCE_FILES
 	src/appfw.cpp
 	src/cmd_buffer.cpp
 	src/cmd_string.cpp
+	src/command_line.cpp
 	src/dbg.cpp
 	src/utils.cpp
 )
@@ -187,6 +189,7 @@ if(APPFW_BUILD_TESTS)
 	# Add test executable
 	add_executable(appfw_test_exec 
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/cmd_string.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/command_line.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/platform.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/utils.cpp

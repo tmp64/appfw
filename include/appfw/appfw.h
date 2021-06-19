@@ -2,6 +2,7 @@
 #define APPFW_APPFW_H
 #include <fmt/format.h>
 #include <appfw/console/console_system.h>
+#include <appfw/command_line.h>
 #include <appfw/compiler.h>
 #include <appfw/dbg.h>
 #include <appfw/platform.h>
@@ -18,6 +19,7 @@ struct ModuleInfo {
 };
 
 ConsoleSystem &getConsole();
+CommandLine &getCommandLine();
 
 } // namespace appfw
 
