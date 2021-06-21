@@ -132,9 +132,9 @@ constexpr const char *typeNameToString<bool>() {
 /**
  * Seeks the file to the beginning and returns its size.
  */
-inline size_t getFileSize(std::ifstream &file) {
+inline int64_t getFileSize(std::ifstream &file) {
     file.seekg(0, file.end);
-    size_t size = file.tellg();
+    int64_t size = file.tellg();
     file.seekg(0, file.beg);
     return size;
 }
@@ -143,7 +143,11 @@ inline size_t getFileSize(std::ifstream &file) {
  * Reads contents of a **binary** file into a char vector.
  */
 inline void readFileContents(std::ifstream &file, std::vector<char> &data) {
-    size_t size = getFileSize(file);
+    int64_t size64 = getFileSize(file);
+    if (size64 > std::numeric_limits<size_t>::max()) {
+        throw std::runtime_error("file is too large");
+    }
+    size_t size = (size_t)size64;
     data.resize(size);
     file.read((char *)data.data(), size);
 }
@@ -152,7 +156,11 @@ inline void readFileContents(std::ifstream &file, std::vector<char> &data) {
  * Reads contents of a **binary** file into a byte vector.
  */
 inline void readFileContents(std::ifstream &file, std::vector<uint8_t> &data) {
-    size_t size = getFileSize(file);
+    int64_t size64 = getFileSize(file);
+    if (size64 > std::numeric_limits<size_t>::max()) {
+        throw std::runtime_error("file is too large");
+    }
+    size_t size = (size_t)size64;
     data.resize(size);
     file.read((char *)data.data(), size);
 }

@@ -130,6 +130,9 @@ set(SOURCE_FILES
 	include/appfw/console/std_console.h
 	include/appfw/console/term_console.h
 	include/appfw/appfw.h
+	include/appfw/binary_buffer.h
+	include/appfw/binary_file.h
+	include/appfw/binary_stream.h
 	include/appfw/cmd_buffer.h
 	include/appfw/cmd_string.h
 	include/appfw/command_line.h
@@ -147,6 +150,9 @@ set(SOURCE_FILES
 	src/console/console_system.cpp
 	src/console/std_console.cpp
 	src/appfw.cpp
+	src/binary_buffer.cpp
+	src/binary_file.cpp
+	src/binary_stream.cpp
 	src/cmd_buffer.cpp
 	src/cmd_string.cpp
 	src/command_line.cpp
@@ -192,6 +198,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 if(APPFW_BUILD_TESTS)
 	# Add test executable
 	add_executable(appfw_test_exec 
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/binary_buffer.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/binary_stream.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/cmd_string.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/command_line.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
