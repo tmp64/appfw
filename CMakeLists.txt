@@ -138,6 +138,7 @@ set(SOURCE_FILES
 	include/appfw/command_line.h
 	include/appfw/compiler.h
 	include/appfw/dbg.h
+	include/appfw/filesystem.h
 	include/appfw/init.h
 	include/appfw/platform.h
 	include/appfw/sha256.h
@@ -157,6 +158,7 @@ set(SOURCE_FILES
 	src/cmd_string.cpp
 	src/command_line.cpp
 	src/dbg.cpp
+	src/filesystem.cpp
 	src/sha256.cpp
 	src/utils.cpp
 )
@@ -198,13 +200,14 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 if(APPFW_BUILD_TESTS)
 	# Add test executable
 	add_executable(appfw_test_exec 
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/binary_buffer.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/binary_stream.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/cmd_string.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/command_line.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/platform.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/utils.cpp
+		tests/src/binary_buffer.cpp
+		tests/src/binary_stream.cpp
+		tests/src/cmd_string.cpp
+		tests/src/command_line.cpp
+		tests/src/filesystem.cpp
+		tests/src/main.cpp
+		tests/src/platform.cpp
+		tests/src/utils.cpp
 	)
 	
 	appfw_module(appfw_test_exec)
@@ -219,7 +222,11 @@ if(APPFW_BUILD_TESTS)
 		target_link_options(appfw_test_exec PRIVATE "/OPT:NOREF")
 	endif()
 	
-	add_test(appfw_test appfw_test_exec)
+	add_test(
+		NAME appfw_test
+		COMMAND appfw_test_exec
+		WORKING_DIRECTORY "tests/workdir"
+	)
 endif()
 
 # appfw examples
