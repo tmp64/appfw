@@ -98,7 +98,7 @@ public:
         uint64_t arraySize = readUInt64();
         seekRelative(-(sizeof(objSize) + sizeof(arraySize)));
 
-        if (objSize != sizeof(obj)) {
+        if (objSize != sizeof(T)) {
             throw std::runtime_error("object size is different");
         }
 
@@ -120,7 +120,7 @@ public:
         uint32_t objSize = readUInt32();
         uint64_t arraySize = readUInt64();
 
-        if (objSize != sizeof(obj)) {
+        if (objSize != sizeof(T)) {
             throw std::runtime_error("object size is different");
         }
 
