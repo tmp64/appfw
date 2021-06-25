@@ -79,20 +79,30 @@ bool convertStringToVal(const std::string &str, T &val) {
     return false;
 }
 
-extern template bool convertStringToVal<bool>(const std::string &str, bool &val);
-extern template bool convertStringToVal<short>(const std::string &str, short &val);
-extern template bool convertStringToVal<unsigned short>(const std::string &str,
-                                                        unsigned short &val);
-extern template bool convertStringToVal<int>(const std::string &str, int &val);
-extern template bool convertStringToVal<unsigned int>(const std::string &str, unsigned int &val);
-extern template bool convertStringToVal<long>(const std::string &str, long &val);
-extern template bool convertStringToVal<unsigned long>(const std::string &str, unsigned long &val);
-extern template bool convertStringToVal<long long>(const std::string &str, long long &val);
-extern template bool convertStringToVal<unsigned long long>(const std::string &str,
-                                                            unsigned long long &val);
-extern template bool convertStringToVal<float>(const std::string &str, float &val);
-extern template bool convertStringToVal<double>(const std::string &str, double &val);
-extern template bool convertStringToVal<std::string>(const std::string &str, std::string &val);
+template <>
+bool convertStringToVal<bool>(const std::string &str, bool &val);
+template <>
+bool convertStringToVal<short>(const std::string &str, short &val);
+template <>
+bool convertStringToVal<unsigned short>(const std::string &str, unsigned short &val);
+template <>
+bool convertStringToVal<int>(const std::string &str, int &val);
+template <>
+bool convertStringToVal<unsigned int>(const std::string &str, unsigned int &val);
+template <>
+bool convertStringToVal<long>(const std::string &str, long &val);
+template <>
+bool convertStringToVal<unsigned long>(const std::string &str, unsigned long &val);
+template <>
+bool convertStringToVal<long long>(const std::string &str, long long &val);
+template <>
+bool convertStringToVal<unsigned long long>(const std::string &str, unsigned long long &val);
+template <>
+bool convertStringToVal<float>(const std::string &str, float &val);
+template <>
+bool convertStringToVal<double>(const std::string &str, double &val);
+template <>
+bool convertStringToVal<std::string>(const std::string &str, std::string &val);
 
 //----------------------------------------------------------------
 
