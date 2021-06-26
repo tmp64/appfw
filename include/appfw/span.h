@@ -4,6 +4,8 @@
 
 namespace appfw {
 
+constexpr size_t dynamic_extent = std::numeric_limits<std::size_t>::max();
+
 /**
  * An object that references a sequence of N objects in memory.
  * Really basic non-standart implementation of std::span from C++20.
@@ -51,10 +53,15 @@ public:
         return span(m_Ptr + m_Size - n, n);
     }
 
-    inline span<T> subspan(size_t offset, size_t count) const noexcept {
+    inline span<T> subspan(size_t offset, size_t count = dynamic_extent) const noexcept {
+        if (count == dynamic_extent) {
+            count = m_Size - offset;
+        }
         AFW_ASSERT_MSG(count + offset <= m_Size, "subspan out of range");
         return span(m_Ptr + offset, count);
     }
+
+    inline operator span<const T>() noexcept { return span<const T>(m_Ptr, m_Size); }
 
 private:
     T *m_Ptr = nullptr;

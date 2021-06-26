@@ -30,6 +30,9 @@ using appfw::ConVar;
 using appfw::ConCommand;
 using appfw::ConMsgType;
 using appfw::ConMsgColor;
+using appfw::CmdString;
+
+using appfw::getCommandLine;
 
 namespace detail {
 namespace MODULE_NAMESPACE {

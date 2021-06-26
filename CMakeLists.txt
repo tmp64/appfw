@@ -17,6 +17,7 @@ get_directory_property(APPFW_HAS_PARENT_SCOPE PARENT_DIRECTORY)
 # Options
 if(NOT APPFW_HAS_PARENT_SCOPE)
 	option(APPFW_BUILD_EXAMPLES "appfw: Build examples" ON)
+	option(APPFW_ENABLE_NETWORK "appfw: Enable network" ON)
 	
 	if(BUILD_TESTING)
 		option(APPFW_BUILD_TESTS "appfw: Build tests" ON)
@@ -80,6 +81,7 @@ macro(appfw_get_std_pch VAR_NAME)
 		<system_error>
 		<thread>
 		<tuple>
+		<type_traits>
 		<unordered_map>
 		<unordered_set>
 		<utility>
@@ -106,6 +108,9 @@ function(appfw_module TARGET)
 endfunction(appfw_module)
 
 # Dependencies
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 if(NOT APPFW_DONT_DOWNLOAD_DEPS)
 	# fmtlib
 	FetchContent_Declare(
@@ -163,6 +168,30 @@ set(SOURCE_FILES
 	src/utils.cpp
 )
 
+if(APPFW_ENABLE_NETWORK)
+	set(SOURCE_FILES
+		${SOURCE_FILES}
+		include/appfw/network/ip_address.h
+		include/appfw/network/sock_addr.h
+		include/appfw/network/socket.h
+		include/appfw/network/tcp_client4.h
+		include/appfw/network/tcp_server4.h
+		
+		src/network/plat_sockets.cpp
+		src/network/plat_sockets.h
+		src/network/sock_addr.cpp
+		src/network/socket.cpp
+		src/network/tcp_client4.cpp
+		src/network/tcp_server4.cpp
+	)
+	
+	if(PLATFORM_WINDOWS)
+		set(NETOWRK_LIBS
+			Ws2_32.lib
+		)
+	endif()
+endif()
+
 add_library(appfw STATIC
 	CMakeLists.txt
 	${SOURCE_FILES}
@@ -185,6 +214,8 @@ target_compile_definitions(appfw PRIVATE ${APPFW_PRIVATE_DEFS})
 
 target_link_libraries(appfw
 	fmt
+	${NETOWRK_LIBS}
+	Threads::Threads
 )
 
 appfw_get_std_pch(PCH_STD_HEADERS)
@@ -225,7 +256,7 @@ if(APPFW_BUILD_TESTS)
 	add_test(
 		NAME appfw_test
 		COMMAND appfw_test_exec
-		WORKING_DIRECTORY "tests/workdir"
+		WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests/workdir"
 	)
 endif()
 
