@@ -5,6 +5,7 @@
 #include <appfw/command_line.h>
 #include <appfw/compiler.h>
 #include <appfw/dbg.h>
+#include <appfw/filesystem.h>
 #include <appfw/platform.h>
 #include <appfw/utils.h>
 #include "this_module_info.h"
@@ -20,6 +21,7 @@ struct ModuleInfo {
 
 ConsoleSystem &getConsole();
 CommandLine &getCommandLine();
+FileSystem &getFileSystem();
 
 } // namespace appfw
 
@@ -33,6 +35,7 @@ using appfw::ConMsgColor;
 using appfw::CmdString;
 
 using appfw::getCommandLine;
+using appfw::getFileSystem;
 
 namespace detail {
 namespace MODULE_NAMESPACE {

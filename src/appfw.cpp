@@ -9,6 +9,7 @@ namespace {
 struct AppfwLibrary {
     unsigned uInitCount = 0;
     appfw::CommandLine cmdLine;
+    appfw::FileSystem fileSystem;
     appfw::manual_ptr<appfw::ConsoleSystem> pConSys;
     appfw::manual_ptr<appfw::ITermConsole> pTermConsole;
 };
@@ -26,6 +27,10 @@ appfw::ConsoleSystem &appfw::getConsole() {
 
 appfw::CommandLine &appfw::getCommandLine() {
     return s_Lib.cmdLine;
+}
+
+appfw::FileSystem &appfw::getFileSystem() {
+    return s_Lib.fileSystem;
 }
 
 //--------------------------------------------------------------
