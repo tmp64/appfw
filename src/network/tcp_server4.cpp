@@ -15,7 +15,9 @@ struct appfw::TcpServer4::Data {
 //----------------------------------------------------------------
 appfw::TcpServer4::TcpServer4() = default;
 
-appfw::TcpServer4::~TcpServer4() = default;
+appfw::TcpServer4::~TcpServer4() {
+    stopListening();
+}
 
 void appfw::TcpServer4::startListening(IPAddress4 ip, uint16_t port, int queueSize) {
     if (isListening()) {
@@ -69,15 +71,17 @@ void appfw::TcpServer4::startListening(IPAddress4 ip, uint16_t port, int queueSi
 }
 
 void appfw::TcpServer4::stopListening() {
-    // Close all active connections
-    for (size_t i = 0; i < m_Data->m_Sockets.size(); i++) {
-        m_Data->m_Sockets[i]->close(SocketCloseReason::Shutdown);
-        m_Data->m_Sockets[i]->m_fd.close();
-        onConnectionClosed(i);
-    }
+    if (isListening()) {
+        // Close all active connections
+        for (size_t i = 0; i < m_Data->m_Sockets.size(); i++) {
+            m_Data->m_Sockets[i]->close(SocketCloseReason::Shutdown);
+            m_Data->m_Sockets[i]->m_fd.close();
+            onConnectionClosed(i);
+        }
 
-    m_Data.reset();
-    m_fd.close();
+        m_Data.reset();
+        m_fd.close();
+    }
 }
 
 void appfw::TcpServer4::poll(int time) {
