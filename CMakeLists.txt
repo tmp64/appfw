@@ -116,7 +116,7 @@ if(NOT APPFW_DONT_DOWNLOAD_DEPS)
 	FetchContent_Declare(
 		fmt_fetch
 		GIT_REPOSITORY "https://github.com/fmtlib/fmt.git"
-		GIT_TAG "7.1.3"
+		GIT_TAG "8.0.0"
 		GIT_SHALLOW
 	)
 	
