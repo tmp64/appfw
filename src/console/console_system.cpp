@@ -30,6 +30,7 @@ private:
     std::vector<ConMsg> m_Buf;
     size_t m_uPtr = 0;
     size_t m_uSize = 0;
+    std::mutex m_Mutex;
 };
 
 appfw::ConsoleSystem::RingBuffer::RingBuffer() {
@@ -47,6 +48,7 @@ const appfw::ConMsg &appfw::ConsoleSystem::RingBuffer::push(const ConMsgInfo &in
 }
 
 const appfw::ConMsg &appfw::ConsoleSystem::RingBuffer::push(ConMsg &&msg) {
+    std::lock_guard lock(m_Mutex);
     m_Buf[m_uPtr] = std::move(msg);
     ConMsg &newmsg = m_Buf[m_uPtr];
     m_uPtr++;
@@ -67,6 +69,8 @@ size_t appfw::ConsoleSystem::RingBuffer::size() {
 }
 
 void appfw::ConsoleSystem::RingBuffer::printPreviousMessages(IConsoleReceiver *pRecv) {
+    std::lock_guard lock(m_Mutex);
+
     if (m_uSize < m_Buf.size()) {
         for (size_t i = 0; i < m_uSize; i++) {
             auto &[info, msg] = m_Buf[i];
