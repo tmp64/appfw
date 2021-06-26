@@ -26,6 +26,7 @@ TEST_CASE("Binary Streams") {
     appfw::BinaryBuffer stream(databuf);
 
     TestData testData;
+    TestData testDataArray[10];
     const std::string STR1 = "Test string!";
     const std::string STR2 = "";
     stream.writeChar(testData.c);
@@ -39,7 +40,8 @@ TEST_CASE("Binary Streams") {
     stream.writeInt64(testData.i64);
     stream.writeString(STR1);
     stream.writeString(STR2);
-
+    stream.writeObject(testData);
+    stream.writeObjectArray(appfw::span(testDataArray).const_span());
     stream.seekAbsolute(0);
     
     std::string str;
@@ -54,4 +56,12 @@ TEST_CASE("Binary Streams") {
     CHECK(stream.readInt64() == testData.i64);
     CHECK(stream.readString() == STR1);
     CHECK(stream.readString() == STR2);
+
+    TestData testDataRead;
+    stream.readObject(testDataRead);
+    CHECK(memcmp(&testData, &testDataRead, sizeof(testData)) == 0);
+
+    TestData testDataArrayRead[10];
+    stream.readObjectArray(appfw::span(testDataArrayRead));
+    CHECK(memcmp(&testDataArray, &testDataArrayRead, sizeof(testDataArray)) == 0);
 }

@@ -25,6 +25,9 @@ public:
     template <size_t N>
     inline span(std::array<T, N> &cont) noexcept : span(cont.data(), N) {}
 
+    template <size_t N>
+    inline span(T (&cont)[N]) noexcept : span(cont, N) {}
+
     inline T *begin() const noexcept { return m_Ptr; }
     inline T *end() const noexcept { return m_Ptr + m_Size; }
 
@@ -61,7 +64,9 @@ public:
         return span(m_Ptr + offset, count);
     }
 
-    inline operator span<const T>() noexcept { return span<const T>(m_Ptr, m_Size); }
+    inline span<const T> const_span() { return span<const T>(m_Ptr, m_Size); }
+
+    inline operator span<const T>() noexcept { return const_span(); }
 
 private:
     T *m_Ptr = nullptr;

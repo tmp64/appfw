@@ -2,6 +2,7 @@
 #define APPFW_BINARY_STREAM_H
 #include <cstdint>
 #include <type_traits>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <appfw/span.h>
@@ -75,7 +76,7 @@ public:
      * Reads a written object
      */
     template <typename T>
-    void readObject(const T &obj) {
+    void readObject(T &obj) {
         static_assert(sizeof(obj) <= std::numeric_limits<uint32_t>::max(),
                       "Object size is too large");
         uint32_t objSize = readUInt32();
@@ -192,19 +193,19 @@ public:
         static_assert(sizeof(obj) <= std::numeric_limits<uint32_t>::max(),
                       "Object size is too large");
         writeUInt32(sizeof(obj));
-        writeBytes(reinterpret_cast<uint8_t *>(&obj), sizeof(obj));
+        writeBytes(reinterpret_cast<const uint8_t *>(&obj), sizeof(obj));
     }
 
     /**
      * Reinterprets the objects as bytes and writes the bytes into the buffer.
      */
     template <typename T>
-    void writeObjectArray(appfw::span<T> data) {
+    void writeObjectArray(appfw::span<const T> data) {
         static_assert(sizeof(T) <= std::numeric_limits<uint32_t>::max(),
                       "Object size is too large");
         writeUInt32(sizeof(T));
         writeUInt64(data.size());
-        writeBytes(reinterpret_cast<uint8_t *>(data.data()), sizeof(T) * data.size());
+        writeBytes(reinterpret_cast<const uint8_t *>(data.data()), sizeof(T) * data.size());
     }
 };
 
