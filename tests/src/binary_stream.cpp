@@ -1,3 +1,4 @@
+#include <cstring>
 #include <appfw/binary_stream.h>
 #include <appfw/binary_buffer.h>
 #include <doctest/doctest.h>
@@ -59,9 +60,9 @@ TEST_CASE("Binary Streams") {
 
     TestData testDataRead;
     stream.readObject(testDataRead);
-    CHECK(memcmp(&testData, &testDataRead, sizeof(testData)) == 0);
+    CHECK(std::memcmp(&testData, &testDataRead, sizeof(testData)) == 0);
 
     TestData testDataArrayRead[10];
     stream.readObjectArray(appfw::span(testDataArrayRead));
-    CHECK(memcmp(&testDataArray, &testDataArrayRead, sizeof(testDataArray)) == 0);
+    CHECK(std::memcmp(&testDataArray, &testDataArrayRead, sizeof(testDataArray)) == 0);
 }
