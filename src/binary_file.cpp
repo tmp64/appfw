@@ -1,5 +1,10 @@
 #include <appfw/binary_file.h>
 
+void appfw::BinaryInputFile::open(const fs::path &path) {
+    std::ifstream file(path);
+    open(std::move(file));
+}
+
 void appfw::BinaryInputFile::open(std::ifstream &&file) {
     m_File = std::move(file);
     m_File.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -30,6 +35,11 @@ void appfw::BinaryInputFile::seekAbsolute(binpos offset) {
     } else {
         m_File.seekg(offset);
     }
+}
+
+void appfw::BinaryOutputFile::open(const fs::path &path) {
+    std::ofstream file(path);
+    open(std::move(file));
 }
 
 void appfw::BinaryOutputFile::open(std::ofstream &&file) {

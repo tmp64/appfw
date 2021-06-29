@@ -2,6 +2,7 @@
 #define APPFW_BINARY_FILE_H
 #include <fstream>
 #include <appfw/binary_stream.h>
+#include <appfw/filesystem.h>
 
 namespace appfw {
 
@@ -9,9 +10,16 @@ class BinaryInputFile : public BinaryInputStream {
 public:
     BinaryInputFile() = default;
 
+    inline BinaryInputFile(const fs::path &path) { open(path); }
+
+    /**
+     * Opens a file.
+     */
+    void open(const fs::path &path);
+
     /**
      * Moves an open file into the stream.
-     * The file will be moved to the beginning.
+     * The file will be seeked to the beginning.
      */
     void open(std::ifstream &&file);
 
@@ -30,9 +38,15 @@ class BinaryOutputFile : public BinaryOutputStream {
 public:
     BinaryOutputFile() = default;
 
+    inline BinaryOutputFile(const fs::path &path) { open(path); }
+
+    /**
+     * Opens a file.
+     */
+    void open(const fs::path &path);
+
     /**
      * Moves an open file into the stream.
-     * The file will be moved to the beginning.
      */
     void open(std::ofstream &&file);
 
