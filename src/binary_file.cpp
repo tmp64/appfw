@@ -11,7 +11,9 @@ void appfw::BinaryInputFile::open(std::ifstream &&file) {
     m_iFileSize = getFileSize(m_File);
 }
 
-void appfw::BinaryInputFile::readBytes(uint8_t *buf, size_t size) {}
+void appfw::BinaryInputFile::readBytes(uint8_t *buf, size_t size) {
+    m_File.read(reinterpret_cast<char *>(buf), size);
+}
 
 appfw::binpos appfw::BinaryInputFile::bytesLeftToRead() const {
     if (m_File.eof()) {
