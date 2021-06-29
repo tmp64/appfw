@@ -207,6 +207,14 @@ public:
         writeUInt64(data.size());
         writeBytes(reinterpret_cast<const uint8_t *>(data.data()), sizeof(T) * data.size());
     }
+
+    /**
+     * Reinterprets the objects as bytes and writes the bytes into the buffer.
+     */
+    template <typename T>
+    void writeObjectArray(appfw::span<T> data) {
+        writeObjectArray(data.const_span());
+    }
 };
 
 }
