@@ -1,5 +1,30 @@
 #include <appfw/cmd_string.h>
 
+appfw::CmdString::CmdString(const std::string *itbeg, const std::string *itend) {
+    size_t s = std::distance(itbeg, itend);
+    m_Args.resize(s);
+    std::copy(itbeg, itend, m_Args.begin());
+}
+
+std::string appfw::CmdString::toString() const {
+    std::string s;
+
+    if (!empty()) {
+        s.push_back('"');
+        s.append((*this)[0]);
+        s.push_back('"');
+
+        for (size_t i = 1; i < size(); i++) {
+            s.push_back(' ');
+            s.push_back('"');
+            s.append((*this)[i]);
+            s.push_back('"');
+        }
+    }
+
+    return s;
+}
+
 std::vector<appfw::CmdString> appfw::CmdString::parse(std::string_view cmd) {
     if (cmd.empty()) {
         return std::vector<CmdString>();
@@ -86,4 +111,16 @@ std::vector<appfw::CmdString> appfw::CmdString::parse(std::string_view cmd) {
     }
 
     return strings;
+}
+
+std::string appfw::CmdString::toString(const std::vector<CmdString> &arr) {
+    std::string s;
+
+    for (auto &i : arr) {
+        s.append(i.toString());
+        s.push_back(';');
+        s.push_back('; ');
+    }
+
+    return s;
 }
