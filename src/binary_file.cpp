@@ -1,7 +1,7 @@
 #include <appfw/binary_file.h>
 
 void appfw::BinaryInputFile::open(const fs::path &path) {
-    std::ifstream file(path);
+    std::ifstream file(path, std::ifstream::binary);
     open(std::move(file));
 }
 
@@ -40,7 +40,7 @@ void appfw::BinaryInputFile::seekAbsolute(binpos offset) {
 }
 
 void appfw::BinaryOutputFile::open(const fs::path &path) {
-    std::ofstream file(path);
+    std::ofstream file(path, std::ifstream::binary);
     open(std::move(file));
 }
 
