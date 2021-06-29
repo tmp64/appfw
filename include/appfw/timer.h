@@ -68,12 +68,12 @@ public:
     /**
      * Returns elapsed seconds as a double.
      */
-    inline double dseconds() { return ms() / 1000000.0; }
+    inline double dseconds() { return us() / 1000000.0; }
 
     /**
      * Returns elapsed seconds as a float.
      */
-    inline float fseconds() { return ms() / 1000000.0f; }
+    inline float fseconds() { return us() / 1000000.0f; }
 
 private:
     std::chrono::time_point<std::chrono::steady_clock> m_StartTime;
