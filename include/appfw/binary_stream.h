@@ -53,6 +53,8 @@ public:
      */
     virtual void seekAbsolute(binpos offset) = 0;
 
+    void readByteSpan(appfw::span<uint8_t> data);
+
     char readChar();
     uint8_t readByte();
     int8_t readSByte();
@@ -166,6 +168,9 @@ public:
      * Seeks to a specified position in the stream.
      */
     virtual void seekAbsolute(binpos offset) = 0;
+
+    void writeByteSpan(appfw::span<const uint8_t> data);
+    void writeByteSpan(appfw::span<uint8_t> data);
 
     void writeChar(const char val);
     void writeByte(const uint8_t val);

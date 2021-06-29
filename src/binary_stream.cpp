@@ -4,6 +4,10 @@
 #include <appfw/binary_stream.h>
 #include <appfw/platform.h>
 
+void appfw::BinaryInputStream::readByteSpan(appfw::span<uint8_t> data) {
+    readBytes(data.data(), data.size());
+}
+
 char appfw::BinaryInputStream::readChar() {
     char val;
     readBytes(reinterpret_cast<uint8_t *>(&val), sizeof(val));
@@ -88,6 +92,14 @@ std::string appfw::BinaryInputStream::readString() {
     std::string str;
     readString(str);
     return str;
+}
+
+void appfw::BinaryOutputStream::writeByteSpan(appfw::span<const uint8_t> data) {
+    writeBytes(data.data(), data.size());
+}
+
+void appfw::BinaryOutputStream::writeByteSpan(appfw::span<uint8_t> data) {
+    writeByteSpan(data.const_span());
 }
 
 void appfw::BinaryOutputStream::writeChar(const char val) {
