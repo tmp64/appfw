@@ -16,8 +16,10 @@ public:
     }
 
     inline void stop() {
-        m_EndTime = std::chrono::steady_clock::now();
-        m_bRunning = false;
+        if (m_bRunning) {
+            m_EndTime = std::chrono::steady_clock::now();
+            m_bRunning = false;
+        }
     }
 
     /**

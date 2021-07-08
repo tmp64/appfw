@@ -146,6 +146,7 @@ set(SOURCE_FILES
 	include/appfw/filesystem.h
 	include/appfw/init.h
 	include/appfw/platform.h
+	include/appfw/prof.h
 	include/appfw/sha256.h
 	include/appfw/span.h
 	include/appfw/timer.h
@@ -164,6 +165,7 @@ set(SOURCE_FILES
 	src/command_line.cpp
 	src/dbg.cpp
 	src/filesystem.cpp
+	src/prof.cpp
 	src/sha256.cpp
 	src/utils.cpp
 )
