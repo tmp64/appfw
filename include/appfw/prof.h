@@ -163,7 +163,7 @@ public:
     static double getMinLostTime();
 
 private:
-    static constexpr double NEW_PART = 0.2;
+    static constexpr double NEW_PART = 0.05;
 
     const char *m_Name = nullptr;
     unsigned m_uFrame = 0;
