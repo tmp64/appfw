@@ -119,7 +119,7 @@ std::string appfw::CmdString::toString(const std::vector<CmdString> &arr) {
     for (auto &i : arr) {
         s.append(i.toString());
         s.push_back(';');
-        s.push_back('; ');
+        s.push_back(' ');
     }
 
     return s;
