@@ -49,7 +49,6 @@ bool appfw::onAssertionFailed(std::string_view cond, std::string_view msg, std::
     switch (action) {
     case AssertAction::Abort: {
         abort();
-        return false;
     }
     case AssertAction::Ignore: {
         return false;
@@ -61,7 +60,6 @@ bool appfw::onAssertionFailed(std::string_view cond, std::string_view msg, std::
         // assertception!
         // AFW_ASSERT(false);
         abort();
-        return false;
     }
     }
 }

@@ -96,7 +96,7 @@ bool appfw::convertStringToVal(const std::string &str, short &val) {
         return false;
     }
 
-    val = iVal;
+    val = (short)iVal;
 
     return true;
 }
@@ -115,7 +115,7 @@ bool appfw::convertStringToVal(const std::string &str, unsigned short &val) {
         return false;
     }
 
-    val = iVal;
+    val = (unsigned short)iVal;
 
     return true;
 }
