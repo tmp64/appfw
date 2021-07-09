@@ -154,7 +154,7 @@ inline int64_t getFileSize(std::ifstream &file) {
  */
 inline void readFileContents(std::ifstream &file, std::vector<char> &data) {
     int64_t size64 = getFileSize(file);
-    if (size64 > std::numeric_limits<size_t>::max()) {
+    if ((uint64_t)size64 > std::numeric_limits<size_t>::max()) {
         throw std::runtime_error("file is too large");
     }
     size_t size = (size_t)size64;
@@ -167,7 +167,7 @@ inline void readFileContents(std::ifstream &file, std::vector<char> &data) {
  */
 inline void readFileContents(std::ifstream &file, std::vector<uint8_t> &data) {
     int64_t size64 = getFileSize(file);
-    if (size64 > std::numeric_limits<size_t>::max()) {
+    if ((uint64_t)size64 > std::numeric_limits<size_t>::max()) {
         throw std::runtime_error("file is too large");
     }
     size_t size = (size_t)size64;
