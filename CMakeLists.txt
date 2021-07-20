@@ -18,7 +18,7 @@ get_directory_property(APPFW_HAS_PARENT_SCOPE PARENT_DIRECTORY)
 if(NOT APPFW_HAS_PARENT_SCOPE)
 	option(APPFW_BUILD_EXAMPLES "appfw: Build examples" ON)
 	option(APPFW_ENABLE_NETWORK "appfw: Enable network" ON)
-	option(APPFW_ENABLE_GLM "appfw: Enable GLM support" ON)
+	option(APPFW_ENABLE_GLM "appfw: Enable GLM support" OFF)
 	
 	if(BUILD_TESTING)
 		option(APPFW_BUILD_TESTS "appfw: Build tests" ON)
