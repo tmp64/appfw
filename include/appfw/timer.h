@@ -10,6 +10,8 @@ namespace appfw {
  */
 class Timer {
 public:
+    inline Timer() { start(); }
+
     inline void start() {
         m_StartTime = std::chrono::steady_clock::now();
         m_bRunning = true;
