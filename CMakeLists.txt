@@ -18,6 +18,7 @@ get_directory_property(APPFW_HAS_PARENT_SCOPE PARENT_DIRECTORY)
 if(NOT APPFW_HAS_PARENT_SCOPE)
 	option(APPFW_BUILD_EXAMPLES "appfw: Build examples" ON)
 	option(APPFW_ENABLE_NETWORK "appfw: Enable network" ON)
+	option(APPFW_ENABLE_GLM "appfw: Enable GLM support" ON)
 	
 	if(BUILD_TESTING)
 		option(APPFW_BUILD_TESTS "appfw: Build tests" ON)
@@ -194,6 +195,13 @@ if(APPFW_ENABLE_NETWORK)
 	endif()
 endif()
 
+set(GLM_LIBS)
+set(GLM_DEFS APPFW_GLM=0)
+if (APPFW_ENABLE_GLM)
+	set(GLM_LIBS glm::glm)
+	set(GLM_DEFS APPFW_GLM=1 GLM_FORCE_SILENT_WARNINGS)
+endif()
+
 add_library(appfw STATIC
 	CMakeLists.txt
 	${SOURCE_FILES}
@@ -211,12 +219,13 @@ appfw_module(appfw)
 target_include_directories(appfw PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(appfw PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-target_compile_definitions(appfw PUBLIC ${PLATFORM_DEFINES})
+target_compile_definitions(appfw PUBLIC ${PLATFORM_DEFINES} ${GLM_DEFS})
 target_compile_definitions(appfw PRIVATE ${APPFW_PRIVATE_DEFS})
 
 target_link_libraries(appfw
 	fmt
 	${NETOWRK_LIBS}
+	${GLM_LIBS}
 	Threads::Threads
 )
 

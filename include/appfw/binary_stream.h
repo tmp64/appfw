@@ -7,6 +7,11 @@
 #include <string_view>
 #include <appfw/span.h>
 
+#if APPFW_GLM
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#endif
+
 namespace appfw {
 
 /**
@@ -133,6 +138,18 @@ public:
 
         readBytes(reinterpret_cast<uint8_t *>(data.data()), sizeof(T) * arraySize);
     }
+
+#if APPFW_GLM
+    /**
+     * Reads a GLM vector. Assumes it is in valid format (little-endian, IEEE-754).
+     */
+    template <typename T>
+    T readVec() {
+        T v;
+        readBytes(reinterpret_cast<uint8_t *>(glm::value_ptr(v)), sizeof(v));
+        return v;
+    }
+#endif
 };
 
 /**
@@ -220,6 +237,16 @@ public:
     void writeObjectArray(appfw::span<T> data) {
         writeObjectArray(data.const_span());
     }
+
+#if APPFW_GLM
+    /**
+     * Writes a GLM vector. Assumes it is in valid format (little-endian, IEEE-754).
+     */
+    template <glm::length_t L, typename T, glm::qualifier Q>
+    void writeVec(const glm::vec<L, T, Q> &v) {
+        writeBytes(reinterpret_cast<const uint8_t *>(glm::value_ptr(v)), sizeof(v));
+    }
+#endif
 };
 
 }
