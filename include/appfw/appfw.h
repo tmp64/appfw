@@ -146,6 +146,19 @@ inline void printd(ConMsgColor color, std::string_view format, const Args &...ar
               fmt::make_format_args(args...));
 }
 
+// Variable type
+template <typename... Args>
+inline void printtype(ConMsgType type, std::string_view format, const Args &...args) {
+    vConPrint(appfw::ConMsgInfo().setType(type), format, fmt::make_format_args(args...));
+}
+
+template <typename... Args>
+inline void printtype(ConMsgType type, ConMsgColor color, std::string_view format,
+                      const Args &...args) {
+    vConPrint(appfw::ConMsgInfo().setType(type).setColor(color), format,
+              fmt::make_format_args(args...));
+}
+
 } // namespace MODULE_NAMESPACE
 } // namespace detail
 
