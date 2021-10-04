@@ -5,6 +5,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <shared_mutex>
 
 namespace fs = std::filesystem;
 
@@ -69,6 +70,7 @@ private:
  * 
  * The filesystem contains a list of search groups.
  * Each search group contains a list of paths (search paths).
+ * Thread-safe.
  */
 class FileSystem {
 public:
@@ -76,19 +78,19 @@ public:
      * Looks for existing file or returns a new path in the first search path.
      * @param   name    Virtual file name.
      */
-    fs::path getFilePath(std::string_view name);
+    fs::path getFilePath(std::string_view name) const;
 
     /**
      * Looks for existing file or throws FileNotFoundException.
      * @param   name    Virtual file name.
      */
-    fs::path findExistingFile(std::string_view name);
+    fs::path findExistingFile(std::string_view name) const;
 
     /**
      * Looks for existing file or returns an empty path.
      * @param   name    Virtual file name.
      */
-    fs::path findExistingFile(std::string_view name, std::nothrow_t);
+    fs::path findExistingFile(std::string_view name, std::nothrow_t) const;
 
     /**
      * Adds a search path to the end of the list (it will be searched after all others).
@@ -106,12 +108,13 @@ private:
         std::vector<fs::path> paths;
     };
 
+    mutable std::shared_mutex m_Mutex;
     std::vector<SearchGroup> m_Groups;
 
     /**
      * Find a group with specified tag or throws SearchGroupNotFoundException.
      */
-    SearchGroup &findGroup(std::string_view tag, std::string_view vpath);
+    const SearchGroup &findGroup(std::string_view tag, std::string_view vpath) const;
 
     /**
      * Find a group with specified tag or creates a new one. 
@@ -121,12 +124,13 @@ private:
     /**
      * Looks for existing file or returns an empty path.
      */
-    fs::path findExistingFile(std::string_view vpath, std::string_view tag, const fs::path &path);
+    fs::path findExistingFile(std::string_view vpath, std::string_view tag,
+                              const fs::path &path) const;
 
     /**
      * Converts the path to a search group name and fs::path
      */
-    std::pair<std::string_view, fs::path> parseVirtualName(std::string_view name);
+    static std::pair<std::string_view, fs::path> parseVirtualName(std::string_view name);
 };
 
 } // namespace appfw

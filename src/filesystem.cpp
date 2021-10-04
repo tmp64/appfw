@@ -40,7 +40,8 @@ const std::string &appfw::InvalidFilePathException::getFilePath() const {
 //--------------------------------------------------------
 // FileSystem
 //--------------------------------------------------------
-fs::path appfw::FileSystem::getFilePath(std::string_view name) {
+fs::path appfw::FileSystem::getFilePath(std::string_view name) const {
+    std::shared_lock lock(m_Mutex);
     auto [tag, path] = parseVirtualName(name);
     fs::path existingPath = findExistingFile(name, tag, path);
 
@@ -48,7 +49,7 @@ fs::path appfw::FileSystem::getFilePath(std::string_view name) {
         return existingPath;
     }
 
-    SearchGroup &g = findGroup(tag, name);
+    const SearchGroup &g = findGroup(tag, name);
 
     if (g.paths.empty()) {
         throw std::logic_error("search group is empty");
@@ -57,7 +58,7 @@ fs::path appfw::FileSystem::getFilePath(std::string_view name) {
     return g.paths[0] / path;
 }
 
-fs::path appfw::FileSystem::findExistingFile(std::string_view name) {
+fs::path appfw::FileSystem::findExistingFile(std::string_view name) const {
     fs::path p = findExistingFile(name, std::nothrow);
 
     if (p.empty()) {
@@ -67,12 +68,13 @@ fs::path appfw::FileSystem::findExistingFile(std::string_view name) {
     return p;
 }
 
-fs::path appfw::FileSystem::findExistingFile(std::string_view name, std::nothrow_t) {
+fs::path appfw::FileSystem::findExistingFile(std::string_view name, std::nothrow_t) const {
     auto [tag, path] = parseVirtualName(name);
     return findExistingFile(name, tag, path);
 }
 
 void appfw::FileSystem::addSearchPath(const fs::path &path, std::string_view tag) {
+    std::unique_lock lock(m_Mutex);
     SearchGroup &g = findOrAddGroup(tag);
 
     fs::path pathToAdd = fs::absolute(path);
@@ -85,6 +87,7 @@ void appfw::FileSystem::addSearchPath(const fs::path &path, std::string_view tag
 }
 
 void appfw::FileSystem::addSearchPathToFront(const fs::path &path, std::string_view tag) {
+    std::unique_lock lock(m_Mutex);
     SearchGroup &g = findOrAddGroup(tag);
 
     fs::path pathToAdd = fs::absolute(path);
@@ -96,8 +99,8 @@ void appfw::FileSystem::addSearchPathToFront(const fs::path &path, std::string_v
     g.paths.insert(g.paths.begin(), pathToAdd);
 }
 
-appfw::FileSystem::SearchGroup &appfw::FileSystem::findGroup(std::string_view tag,
-                                                             std::string_view vpath) {
+const appfw::FileSystem::SearchGroup &appfw::FileSystem::findGroup(std::string_view tag,
+                                                             std::string_view vpath) const {
     for (auto &i : m_Groups) {
         if (i.tag == tag) {
             return i;
@@ -123,10 +126,11 @@ appfw::FileSystem::SearchGroup &appfw::FileSystem::findOrAddGroup(std::string_vi
 }
 
 fs::path appfw::FileSystem::findExistingFile(std::string_view vpath, std::string_view tag,
-                                             const fs::path &path) {
-    SearchGroup &g = findGroup(tag, vpath);
+                                             const fs::path &path) const {
+    std::shared_lock lock(m_Mutex);
+    const SearchGroup &g = findGroup(tag, vpath);
 
-    for (fs::path &spath : g.paths) {
+    for (const fs::path &spath : g.paths) {
         fs::path fullPath = spath / path;
         if (fs::exists(fullPath)) {
             return fullPath;
