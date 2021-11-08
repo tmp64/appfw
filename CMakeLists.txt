@@ -150,6 +150,7 @@ set(SOURCE_FILES
 	include/appfw/prof.h
 	include/appfw/sha256.h
 	include/appfw/span.h
+	include/appfw/str_utils.h
 	include/appfw/timer.h
 	include/appfw/unique_function.h
 	include/appfw/utils.h
