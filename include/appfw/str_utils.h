@@ -14,6 +14,16 @@ inline int strcasecmp(const char *string1, const char *string2) {
 #endif
 }
 
+//! Comapres two ASCII strings ignoring the case.
+//! @returns 0 if equal, < 0 if lexicographically less, > 0 if greater
+inline int strncasecmp(const char *string1, const char *string2, size_t n) {
+#if PLATFORM_WINDOWS
+    return ::_strnicmp(string1, string2, n);
+#else
+    return ::strncasecmp(string1, string2, n);
+#endif
+}
+
 //! @returns whether the char is an ASCII whitespace char.
 inline bool isAsciiSpace(char c) {
     return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v' || c == '\f';
