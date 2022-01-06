@@ -52,12 +52,12 @@ public:
     ~ConsoleSystem();
 
     /**
-     * Prints a string to the console.
+     * Prints a string to the console. Thread-safe.
      */
     void print(const ConMsgInfo &info, std::string_view msg);
 
     /**
-     * Prints a string to the console.
+     * Prints a string to the console. Thread-safe.
      */
     void print(const ConMsgInfo &info, std::string &&msg);
 

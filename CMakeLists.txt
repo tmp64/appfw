@@ -20,6 +20,10 @@ if(NOT APPFW_HAS_PARENT_SCOPE)
 	option(APPFW_ENABLE_NETWORK "appfw: Enable network" ON)
 	option(APPFW_ENABLE_GLM "appfw: Enable GLM support" OFF)
 	
+	if(APPFW_ENABLE_NETWORK)
+		option(APPFW_ENABLE_EXTCON "appfw: Enable External Console support (requires networking)" OFF)
+	endif()
+	
 	if(BUILD_TESTING)
 		option(APPFW_BUILD_TESTS "appfw: Build tests" ON)
 	endif()
@@ -176,12 +180,14 @@ set(SOURCE_FILES
 if(APPFW_ENABLE_NETWORK)
 	set(SOURCE_FILES
 		${SOURCE_FILES}
+		include/appfw/network/datagram_parser.h
 		include/appfw/network/ip_address.h
 		include/appfw/network/sock_addr.h
 		include/appfw/network/socket.h
 		include/appfw/network/tcp_client4.h
 		include/appfw/network/tcp_server4.h
 		
+		src/network/datagram_parser.cpp
 		src/network/plat_sockets.cpp
 		src/network/plat_sockets.h
 		src/network/sock_addr.cpp
@@ -189,6 +195,16 @@ if(APPFW_ENABLE_NETWORK)
 		src/network/tcp_client4.cpp
 		src/network/tcp_server4.cpp
 	)
+	
+	if(APPFW_ENABLE_EXTCON)
+		set(SOURCE_FILES
+			${SOURCE_FILES}
+			include/appfw/extcon/consts.h
+			include/appfw/extcon/extcon_host.h
+
+			src/extcon/extcon_host.cpp
+		)
+	endif()
 	
 	if(PLATFORM_WINDOWS)
 		set(NETOWRK_LIBS
