@@ -84,7 +84,7 @@ bool appfw::TcpClient4::updateStatus(int time) {
         FD_SET(m_fd.get(), &exceptfds);
 
         int result =
-            ::select(m_fd.get() + 1, nullptr, &writefds , & exceptfds, (time == -1) ? nullptr : &tv);
+            ::select((int)m_fd.get() + 1, nullptr, &writefds , & exceptfds, (time == -1) ? nullptr : &tv);
 
         if (result == 0) {
             // Still connecting
@@ -149,7 +149,7 @@ bool appfw::TcpClient4::updateStatus(int time) {
         FD_SET(m_fd.get(), &readfds);
 
         int result =
-            ::select(m_fd.get() + 1, &readfds, nullptr, nullptr, (time == -1) ? nullptr : &tv);
+            ::select((int)m_fd.get() + 1, &readfds, nullptr, nullptr, (time == -1) ? nullptr : &tv);
 
         if (result == 0) {
             // Nothin new
@@ -178,7 +178,7 @@ void appfw::TcpClient4::close() {
 }
 
 int appfw::TcpClient4::read(appfw::span<uint8_t> buf) {
-    int size = ::recv(m_fd.get(), reinterpret_cast<char *>(buf.data()), buf.size(), 0);
+    int size = ::recv(m_fd.get(), reinterpret_cast<char *>(buf.data()), (int)buf.size(), 0);
 
     if (size >= 0) {
         return size;
@@ -188,7 +188,7 @@ int appfw::TcpClient4::read(appfw::span<uint8_t> buf) {
 }
 
 int appfw::TcpClient4::write(appfw::span<const uint8_t> buf) {
-    int size = ::send(m_fd.get(), reinterpret_cast<const char *>(buf.data()), buf.size(), 0);
+    int size = ::send(m_fd.get(), reinterpret_cast<const char *>(buf.data()), (int)buf.size(), 0);
 
     if (size >= 0) {
         return size;

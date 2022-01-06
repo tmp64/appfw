@@ -9,7 +9,7 @@ namespace appfw {
 
 #if PLATFORM_WINDOWS
 using SocketFile = uintptr_t;
-constexpr SocketFile NULL_SOCKET = ~(0);
+constexpr SocketFile NULL_SOCKET = (SocketFile)(~(0));
 #elif PLATFORM_UNIX
 using SocketFile = int;
 constexpr SocketFile NULL_SOCKET = -1;

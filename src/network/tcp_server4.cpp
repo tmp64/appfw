@@ -91,7 +91,7 @@ void appfw::TcpServer4::poll(int time) {
 
     AFW_ASSERT(m_Data->m_PollList.size() >= 1);
 
-    int num = appfw::platsock::poll(m_Data->m_PollList.data(), m_Data->m_PollList.size(), time);
+    int num = appfw::platsock::poll(m_Data->m_PollList.data(), (unsigned)m_Data->m_PollList.size(), time);
 
     if (num < 0) {
         // Error, most likely unrecoverable
@@ -239,7 +239,7 @@ void appfw::TcpServer4::onConnectionClosed(size_t idx) {
 // TcpClientSocket4
 //----------------------------------------------------------------
 int appfw::TcpClientSocket4::read(appfw::span<uint8_t> buf) {
-    int size = ::recv(m_fd.get(), reinterpret_cast<char *>(buf.data()), buf.size(), 0);
+    int size = ::recv(m_fd.get(), reinterpret_cast<char *>(buf.data()), (int)buf.size(), 0);
 
     if (size >= 0) {
         return size;
@@ -249,7 +249,7 @@ int appfw::TcpClientSocket4::read(appfw::span<uint8_t> buf) {
 }
 
 int appfw::TcpClientSocket4::write(appfw::span<const uint8_t> buf) {
-    int size = ::send(m_fd.get(), reinterpret_cast<const char *>(buf.data()), buf.size(), 0);
+    int size = ::send(m_fd.get(), reinterpret_cast<const char *>(buf.data()), (int)buf.size(), 0);
 
     if (size >= 0) {
         return size;
