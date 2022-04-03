@@ -5,6 +5,8 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <map>
+#include <set>
 #include <shared_mutex>
 
 namespace fs = std::filesystem;
