@@ -43,6 +43,12 @@ const std::string &appfw::InvalidFilePathException::getFilePath() const {
 fs::path appfw::FileSystem::getFilePath(std::string_view name) const {
     std::shared_lock lock(m_Mutex);
     auto [tag, path] = parseVirtualName(name);
+
+    if (path.empty()) {
+        // Empty path is only allowed for directiories to point to the root
+        throw InvalidFilePathException(name);
+    }
+
     fs::path existingPath = findExistingFile(name, tag, path);
 
     if (!existingPath.empty()) {
