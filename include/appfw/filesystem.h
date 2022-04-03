@@ -93,6 +93,18 @@ public:
     fs::path findExistingFile(std::string_view name, std::nothrow_t) const;
 
     /**
+     * @param   name    Virtual file path of a directory.
+     * @returns a list of all files in a directory.
+     */
+    std::set<std::string> getFileList(std::string_view name) const;
+
+    /**
+     * @param   name    Virtual file path of a directory.
+     * @returns a list of all directory entries from all search groups without duplicates. Key is file name.
+     */
+    std::map<std::string, fs::directory_entry> getDirEntries(std::string_view name) const;
+
+    /**
      * Adds a search path to the end of the list (it will be searched after all others).
      */
     void addSearchPath(const fs::path &path, std::string_view tag);

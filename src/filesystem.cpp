@@ -73,6 +73,49 @@ fs::path appfw::FileSystem::findExistingFile(std::string_view name, std::nothrow
     return findExistingFile(name, tag, path);
 }
 
+std::set<std::string> appfw::FileSystem::getFileList(std::string_view name) const {
+    std::shared_lock lock(m_Mutex);
+    std::set<std::string> fileList;
+    auto [tag, path] = parseVirtualName(name);
+    const SearchGroup &g = findGroup(tag, name);
+    
+    for (const fs::path &rootPath : g.paths) {
+        auto directory = fs::directory_iterator(rootPath / path);
+
+        for (auto &dirEntry : directory) {
+            fileList.insert(dirEntry.path().filename().u8string());
+        }
+    }
+
+    return fileList;
+}
+
+std::map<std::string, fs::directory_entry>
+appfw::FileSystem::getDirEntries(std::string_view name) const {
+    std::shared_lock lock(m_Mutex);
+    std::map<std::string, fs::directory_entry> fileList;
+    auto [tag, path] = parseVirtualName(name);
+    const SearchGroup &g = findGroup(tag, name);
+
+    for (const fs::path &rootPath : g.paths) {
+        fs::path curPath = rootPath / path;
+        if (!fs::is_directory(curPath)) {
+            continue;
+        }
+
+        for (auto &dirEntry : fs::directory_iterator(curPath)) {
+            std::string dirEntryName = dirEntry.path().filename().u8string();
+            auto it = fileList.find(dirEntryName);
+
+            if (it == fileList.end()) {
+                fileList.insert({dirEntryName, dirEntry});
+            }
+        }
+    }
+
+    return fileList;
+}
+
 void appfw::FileSystem::addSearchPath(const fs::path &path, std::string_view tag) {
     std::unique_lock lock(m_Mutex);
     SearchGroup &g = findOrAddGroup(tag);
@@ -149,7 +192,10 @@ std::pair<std::string_view, fs::path> appfw::FileSystem::parseVirtualName(std::s
     std::string_view tag = name.substr(0, delimPos);
     std::string_view path = name.substr(delimPos + 1);
 
-    if (tag.empty() || path.empty()) {
+    // path can be empty if it points to the root
+    // path must not begin with a slash
+    bool pathValid = path.empty() || path[0] != '/';
+    if (tag.empty() || !pathValid) {
         throw InvalidFilePathException(name);
     }
 
