@@ -66,6 +66,11 @@ public:
 
     inline span<const T> const_span() { return span<const T>(m_Ptr, m_Size); }
 
+    inline span<std::remove_const_t<T>> remove_const() {
+        using MT = std::remove_const_t<T>;
+        return span<MT>(const_cast<MT *>(m_Ptr), m_Size);
+    }
+
     inline operator span<const T>() noexcept { return const_span(); }
 
 private:
