@@ -83,6 +83,18 @@ inline void strToLower(ConstIter begin, ConstIter end, Iter out) {
     }
 }
 
+//! Checks if a string starts with a substring.
+inline bool startsWith(std::string_view str, std::string_view substr) {
+    size_t len = substr.size();
+    return str.size() >= len && str.substr(0, len) == substr;
+}
+
+//! Checks if a string ends with a substring.
+inline bool endsWith(std::string_view str, std::string_view substr) {
+    size_t len = substr.size();
+    return str.size() >= len && str.substr(str.size() - len, len) == substr;
+}
+
 } // namespace appfw
 
 #endif
