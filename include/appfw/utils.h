@@ -22,16 +22,19 @@ struct FalseT : std::false_type {};
  * An uncopyable class.
  * Inherit from it to make your class uncopyable as well.
  */
-class NoCopy {
+class MoveOnly {
 public:
-    NoCopy() = default;
+    MoveOnly() = default;
 
-    NoCopy(const NoCopy &) = delete;
-    NoCopy &operator=(const NoCopy &) = delete;
+    MoveOnly(const MoveOnly &) = delete;
+    MoveOnly &operator=(const MoveOnly &) = delete;
 
-    NoCopy(NoCopy &&) = default;
-    NoCopy &operator=(NoCopy &&) = default;
+    MoveOnly(MoveOnly &&) = default;
+    MoveOnly &operator=(MoveOnly &&) = default;
 };
+
+//! DEPRECATED: Use appfe::MoveOnly to show intent more clearly.
+class [[deprecated]] NoCopy : public MoveOnly {};
 
 /**
  * An unmoveable class.
