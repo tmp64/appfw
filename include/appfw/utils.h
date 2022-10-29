@@ -29,8 +29,8 @@ public:
     MoveOnly(const MoveOnly &) = delete;
     MoveOnly &operator=(const MoveOnly &) = delete;
 
-    MoveOnly(MoveOnly &&) = default;
-    MoveOnly &operator=(MoveOnly &&) = default;
+    MoveOnly(MoveOnly &&) noexcept = default;
+    MoveOnly &operator=(MoveOnly &&) noexcept = default;
 };
 
 //! DEPRECATED: Use appfe::MoveOnly to show intent more clearly.
