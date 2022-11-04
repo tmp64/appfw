@@ -60,7 +60,8 @@ public:
         if (count == dynamic_extent) {
             count = m_Size - offset;
         }
-        AFW_ASSERT_MSG(count + offset <= m_Size, "subspan out of range");
+        AFW_ASSERT_MSG(offset <= m_Size && count <= m_Size
+            && offset + count <= m_Size, "subspan out of range");
         return span(m_Ptr + offset, count);
     }
 
