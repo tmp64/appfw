@@ -21,6 +21,7 @@ public:
     }
 
     inline span(std::vector<T> &cont) noexcept : span(cont.data(), cont.size()) {}
+    inline span(const std::vector<std::remove_const_t<T>> &cont) noexcept : span(cont.data(), cont.size()) {}
 
     template <size_t N>
     inline span(std::array<T, N> &cont) noexcept : span(cont.data(), N) {}
