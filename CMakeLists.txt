@@ -175,6 +175,7 @@ set(SOURCE_FILES
 	src/prof.cpp
 	src/sha256.cpp
 	src/span.natvis
+	src/str_utils.cpp
 	src/utils.cpp
 )
 

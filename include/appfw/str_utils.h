@@ -4,6 +4,10 @@
 
 namespace appfw {
 
+//! Replaces all occurences of `from` with `to` in `str.
+//! @returns the number of occurenses replaced.
+int strReplace(std::string &str, std::string_view from, std::string_view to);
+
 //! Comapres two ASCII strings ignoring the case.
 //! @returns 0 if equal, < 0 if lexicographically less, > 0 if greater
 inline int strcasecmp(const char *string1, const char *string2) {
